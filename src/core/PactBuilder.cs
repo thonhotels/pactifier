@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Pactifier.Core.Comparers;
 
 namespace Pactifier.Core
 {
@@ -35,7 +36,7 @@ namespace Pactifier.Core
 
         public Interaction Interaction()
         {
-            var i = new Interaction();
+            var i = new Interaction(new RequestComparer(new HeaderComparer()));
             Interactions.Add(i);
             return i;
         }

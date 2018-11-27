@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using FakeItEasy;
 using Newtonsoft.Json;
 using Pactifier.Core;
 using Xunit;
@@ -22,7 +23,7 @@ namespace CoreTests
                 SpecificationVersion = "2.0"
             };
             var builder = new PactBuilder(config);
-            var client =
+            var (client, _) =
                 builder
                     .ServiceConsumer("Me")
                     .HasPactWith("Someone")
@@ -48,7 +49,7 @@ namespace CoreTests
                 SpecificationVersion = "2.0"
             };
             var builder = new PactBuilder(config);
-            var client =
+            var (client, verify) =
                 builder
                     .ServiceConsumer("Me")
                     .HasPactWith("Someone")
@@ -57,10 +58,9 @@ namespace CoreTests
                         {
                             Method = HttpMethod.Post,
                             Path = "/api/test/something",
-                            Headers = new Dictionary<string, object>
+                            Headers = new Dictionary<string, string>
                             {
-                                { "Authorization", "Bearer accesstoken" },
-                                { "Content-Type", "application/json; charset=utf-8" }
+                                { "Authorization", "Bearer accesstoken" }
                             },
                             Body = new { SomeProperty = "test" }
                         })
@@ -81,6 +81,7 @@ namespace CoreTests
             var response = await client.SendAsync(r);
             Assert.NotNull(response);
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+            verify();
         }
     }
 }
