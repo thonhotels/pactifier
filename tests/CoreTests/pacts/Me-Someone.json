@@ -1,0 +1,41 @@
+{
+  "consumer": {
+    "name": "Me"
+  },
+  "provider": {
+    "name": "Someone"
+  },
+  "interactions": [
+    {
+      "description": "upon receiving stuff",
+      "providerState": "something given",
+      "request": {
+        "method": {
+          "method": "GET"
+        },
+        "path": "/api/test/something",
+        "query": "a=b",
+        "headers": {
+          "Authorization": "Bearer accesstoken"
+        },
+        "body": {
+          "someProperty": "test"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "body": {
+          "someProperty": "test"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

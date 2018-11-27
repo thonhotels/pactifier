@@ -12,10 +12,19 @@ namespace Pactifier.Core
 {
     public class Interaction
     {
-        private ProviderServiceResponse Response { get; set; }
-        private ProviderServiceRequest Request { get; set; }
+        [JsonProperty(Order = 1)]
         private string Description { get; set; }
+
+        [JsonProperty(Order = 2)]
         private string ProviderState { get; set; }
+        
+        [JsonProperty(Order = 3)]
+        private ProviderServiceRequest Request { get; set; }
+
+        [JsonProperty(Order = 4)]
+        private ProviderServiceResponse Response { get; set; }
+
+        
         private RequestComparer Comparer { get; }
 
         public Interaction(RequestComparer comparer)

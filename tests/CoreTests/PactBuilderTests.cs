@@ -17,11 +17,7 @@ namespace CoreTests
         [Fact]
         public void PactBuilderCreatesHttpClient()
         {
-            var config = new PactConfig
-            {
-                PactDir = "./pacts",
-                SpecificationVersion = "2.0"
-            };
+            var config = new PactConfig();            
             var builder = new PactBuilder(config);
             var (client, _) =
                 builder
@@ -43,12 +39,7 @@ namespace CoreTests
         [Fact]
         public async Task ClientRespondsCreatedToPost()
         {
-            var config = new PactConfig
-            {
-                PactDir = "./pacts",
-                SpecificationVersion = "2.0"
-            };
-            var builder = new PactBuilder(config);
+            var builder = new PactBuilder();
             var (client, verify) =
                 builder
                     .ServiceConsumer("Me")
@@ -87,12 +78,7 @@ namespace CoreTests
         [Fact]
         public async Task PostThrowsIfBodyIsDifferent()
         {
-            var config = new PactConfig
-            {
-                PactDir = "./pacts",
-                SpecificationVersion = "2.0"
-            };
-            var builder = new PactBuilder(config);
+            var builder = new PactBuilder();
             var (client, verify) =
                 builder
                     .ServiceConsumer("Me")
@@ -119,12 +105,7 @@ namespace CoreTests
         [Fact]
         public async Task ClientRespondsSuccessToGet()
         {
-            var config = new PactConfig
-            {
-                PactDir = "./pacts",
-                SpecificationVersion = "2.0"
-            };
-            var builder = new PactBuilder(config);
+            var builder = new PactBuilder();
             var (client, verify) =
                 builder
                     .ServiceConsumer("Me")
@@ -165,12 +146,7 @@ namespace CoreTests
         [Fact]
         public async Task ThrowsIfQueryIsDifferent()
         {
-            var config = new PactConfig
-            {
-                PactDir = "./pacts",
-                SpecificationVersion = "2.0"
-            };
-            var builder = new PactBuilder(config);
+            var builder = new PactBuilder();
             var (client, verify) =
                 builder
                     .ServiceConsumer("Me")
@@ -197,17 +173,14 @@ namespace CoreTests
         [Fact]
         public async Task QueryCanContainMultipleSegments()
         {
-            var config = new PactConfig
-            {
-                PactDir = "./pacts",
-                SpecificationVersion = "2.0"
-            };
-            var builder = new PactBuilder(config);
+            var builder = new PactBuilder();
             var (client, verify) =
                 builder
                     .ServiceConsumer("Me")
                     .HasPactWith("Someone")
                     .Interaction()
+                    .Given("something given")
+                    .UponReceiving("upon receiving stuff")
                     .With(new ProviderServiceRequest
                         {
                             Method = HttpMethod.Get,
@@ -216,7 +189,7 @@ namespace CoreTests
                         })
                     .WillRespondWith(new ProviderServiceResponse
                         {
-                            Status = HttpStatusCode.OK                            
+                            Status = HttpStatusCode.OK
                         })
                     .Client();                    
             var response = await client.GetAsync("/api/test/something?a=b&test=quest");
@@ -224,6 +197,41 @@ namespace CoreTests
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
             verify();
+        }
+
+        [Fact]
+        public void BuildDoesNotThrow()
+        {
+            var builder = new PactBuilder();
+            
+            builder
+                .ServiceConsumer("Me")
+                .HasPactWith("Someone")
+                .Interaction()
+                .Given("something given")
+                .UponReceiving("upon receiving stuff")
+                .With(new ProviderServiceRequest
+                    {
+                        Method = HttpMethod.Get,
+                        Path = "/api/test/something",
+                        Query = "a=b",
+                        Headers = new Dictionary<string, string>
+                        {
+                            { "Authorization", "Bearer accesstoken" }
+                        },
+                        Body = new { SomeProperty = "test" }
+                    })
+                .WillRespondWith(new ProviderServiceResponse
+                    {
+                        Status = HttpStatusCode.OK,
+                        Headers = new Dictionary<string, string>
+                        {
+                            { "Content-Type", "application/json; charset=utf-8" }
+                        },                           
+                        Body = new { SomeProperty = "test" }                            
+                    })
+                .Client();                    
+            builder.Build();
         }
     }
 }

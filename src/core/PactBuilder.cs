@@ -1,16 +1,19 @@
 using System.Collections.Generic;
 using Pactifier.Core.Comparers;
+using Pactifier.Core.Serialization;
 
 namespace Pactifier.Core
 {
     public class PactBuilder 
     {
         private PactConfig Config { get; }
-        private List<Interaction> Interactions { get; }
 
-        
+
         public string ConsumerName { get; private set; }
+
         public string ProviderName { get; private set; }
+
+        private List<Interaction> Interactions { get; }
 
         public PactBuilder() : this(new PactConfig())
         {
@@ -43,7 +46,8 @@ namespace Pactifier.Core
 
         public void Build()
         {
-
+            var serializer = new PactSerializer(ConsumerName, ProviderName, Interactions, Config);
+            serializer.Execute();
         }
 
         public void ClearInteractions()
