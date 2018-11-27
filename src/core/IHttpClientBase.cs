@@ -13,5 +13,5 @@ namespace Pactifier.Core
         Task<HttpResponseMessage> PutAsync(string requestUri, HttpContent content);
         Task<HttpResponseMessage> SendAsync(HttpRequestMessage request);
         void SetBearerToken(string token);
-    } 
+    }
 }

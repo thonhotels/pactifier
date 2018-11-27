@@ -2,9 +2,11 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Linq;
 using FakeItEasy;
 using Pactifier.Core.Comparers;
-using Xunit;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace Pactifier.Core
 {
@@ -15,10 +17,12 @@ namespace Pactifier.Core
         private string Description { get; set; }
         private string ProviderState { get; set; }
         private RequestComparer Comparer { get; }
+        private string BaseUrl { get; }
 
-        public Interaction(RequestComparer comparer)
+        public Interaction(string baseUrl, RequestComparer comparer)
         {
             Comparer = comparer;
+            BaseUrl = baseUrl;
         }
 
         public Interaction WillRespondWith(ProviderServiceResponse response)
@@ -47,8 +51,10 @@ namespace Pactifier.Core
         public (IHttpClientBase, Action) Client()
         {
             var client = A.Fake<IHttpClientBase>();
-            A.CallTo(() => client.SendAsync(A<HttpRequestMessage>._)).Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.Created)));
-            return (client, Verify(client, Request, Comparer));
+            client.BaseAddress = new Uri("http://localhost");
+            A.CallTo(() => client.SendAsync(A<HttpRequestMessage>._)).Returns(Task.FromResult(CreateResponseMessage()));
+            var clientBase = new HttpClientBase(client);
+            return (clientBase, Verify(client, Request, Comparer));
         }
 
         private static Action Verify(IHttpClientBase client, ProviderServiceRequest r, RequestComparer comparer)
@@ -60,6 +66,21 @@ namespace Pactifier.Core
         private static bool RequestsAreSame(ProviderServiceRequest expected, HttpRequestMessage actual)
         {
             return true;
+        }
+
+        private HttpResponseMessage CreateResponseMessage()
+        {
+            var result = new HttpResponseMessage(Response.Status);
+            result.Headers.Clear();
+            Response
+                .Headers
+                .Where(h => h.Key != "Content-Type")
+                .ToList()
+                .ForEach(kv => result.Headers.Add(kv.Key, kv.Value));
+
+            if (!ReferenceEquals(null, Response.Body))
+                result.Content = new StringContent(JsonConvert.SerializeObject(Response.Body), Encoding.UTF8, "application/json");
+            return result;
         }
     }
 }

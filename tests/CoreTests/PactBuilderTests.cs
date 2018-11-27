@@ -66,21 +66,67 @@ namespace CoreTests
                         })
                     .WillRespondWith(new ProviderServiceResponse
                         {
-                            Status = 201,
-                            Headers = new Dictionary<string, object>
+                            Status = HttpStatusCode.Created,
+                            Headers = new Dictionary<string, string>
                             {
                                 { "Content-Type", "application/json" }
                             }
                         })
                     .Client();                    
             Assert.NotNull(client);
-            var r = new HttpRequestMessage(HttpMethod.Post, "/api/test/something");
+            var r = new HttpRequestMessage(HttpMethod.Post, client.BaseAddress + "/api/test/something");
             
             r.Headers.Authorization =  new AuthenticationHeaderValue("Bearer", "accesstoken");
             r.Content = new StringContent(JsonConvert.SerializeObject(new { SomeProperty = "test" }), Encoding.UTF8, "application/json");
             var response = await client.SendAsync(r);
             Assert.NotNull(response);
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+            verify();
+        }
+
+        [Fact]
+        public async Task ClientRespondsSuccessToGet()
+        {
+            var config = new PactConfig
+            {
+                PactDir = "./pacts",
+                SpecificationVersion = "2.0"
+            };
+            var builder = new PactBuilder(config);
+            var (client, verify) =
+                builder
+                    .ServiceConsumer("Me")
+                    .HasPactWith("Someone")
+                    .Interaction()
+                    .With(new ProviderServiceRequest
+                        {
+                            Method = HttpMethod.Get,
+                            Path = "/api/test/something",
+                            Headers = new Dictionary<string, string>
+                            {
+                                { "Authorization", "Bearer accesstoken" }
+                            }
+                        })
+                    .WillRespondWith(new ProviderServiceResponse
+                        {
+                            Status = HttpStatusCode.OK,
+                            Headers = new Dictionary<string, string>
+                            {
+                                { "Content-Type", "application/json; charset=utf-8" }
+                            },
+                            Body = new { SomeProperty = "test" }
+                        })
+                    .Client();                    
+            Assert.NotNull(client);
+            client.SetBearerToken("accesstoken");        
+            var response = await client.GetAsync("/api/test/something");
+            Assert.NotNull(response);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var json = await response.Content.ReadAsStringAsync();
+            Assert.NotNull(json);
+            var result = JsonConvert.DeserializeObject<dynamic>(json);
+            Assert.Equal("test", (string)result.SomeProperty);
+
             verify();
         }
     }
