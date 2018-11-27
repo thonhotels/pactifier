@@ -161,5 +161,69 @@ namespace CoreTests
 
             verify();
         }
+
+        [Fact]
+        public async Task ThrowsIfQueryIsDifferent()
+        {
+            var config = new PactConfig
+            {
+                PactDir = "./pacts",
+                SpecificationVersion = "2.0"
+            };
+            var builder = new PactBuilder(config);
+            var (client, verify) =
+                builder
+                    .ServiceConsumer("Me")
+                    .HasPactWith("Someone")
+                    .Interaction()
+                    .With(new ProviderServiceRequest
+                        {
+                            Method = HttpMethod.Get,
+                            Path = "/api/test/something",
+                            Query = "a=b"
+                        })
+                    .WillRespondWith(new ProviderServiceResponse
+                        {
+                            Status = HttpStatusCode.OK                            
+                        })
+                    .Client();                    
+            var response = await client.GetAsync("/api/test/something?a=c");
+            Assert.NotNull(response);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            Assert.Throws<ExpectationException>(() => verify());
+        }
+
+        [Fact]
+        public async Task QueryCanContainMultipleSegments()
+        {
+            var config = new PactConfig
+            {
+                PactDir = "./pacts",
+                SpecificationVersion = "2.0"
+            };
+            var builder = new PactBuilder(config);
+            var (client, verify) =
+                builder
+                    .ServiceConsumer("Me")
+                    .HasPactWith("Someone")
+                    .Interaction()
+                    .With(new ProviderServiceRequest
+                        {
+                            Method = HttpMethod.Get,
+                            Path = "/api/test/something",
+                            Query = "a=b&test=quest"
+                        })
+                    .WillRespondWith(new ProviderServiceResponse
+                        {
+                            Status = HttpStatusCode.OK                            
+                        })
+                    .Client();                    
+            var response = await client.GetAsync("/api/test/something?a=b&test=quest");
+            Assert.NotNull(response);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            verify();
+        }
     }
 }

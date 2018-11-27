@@ -18,12 +18,16 @@ namespace Pactifier.Core.Comparers
 
         public bool Execute(ProviderServiceRequest expected, HttpRequestMessage actual)
         {
+            string RemoveLeadingQuestionMark(string q) => string.IsNullOrEmpty(q) ? q : q.Substring(1);
+
             if ( expected
                     .Headers
                     .Keys
                     .Any(k => !actual.Headers.Contains(k) || !HeaderComparer.Execute(expected.Headers[k], actual.Headers.GetValues(k))))
                 return false;
             if (actual.RequestUri.LocalPath.Replace("//", "/") != expected.Path)
+                return false;
+            if (!string.IsNullOrEmpty(expected.Query) && RemoveLeadingQuestionMark(actual.RequestUri.Query) != expected.Query)
                 return false;
             return CompareContent(expected, actual.Content);
         }
