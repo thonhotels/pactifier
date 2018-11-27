@@ -85,6 +85,38 @@ namespace CoreTests
         }
 
         [Fact]
+        public async Task PostThrowsIfBodyIsDifferent()
+        {
+            var config = new PactConfig
+            {
+                PactDir = "./pacts",
+                SpecificationVersion = "2.0"
+            };
+            var builder = new PactBuilder(config);
+            var (client, verify) =
+                builder
+                    .ServiceConsumer("Me")
+                    .HasPactWith("Someone")
+                    .Interaction()
+                    .With(new ProviderServiceRequest
+                        {
+                            Method = HttpMethod.Post,
+                            Path = "/api/test/something",
+                            Body = new { SomeProperty = "test" }
+                        })
+                    .WillRespondWith(new ProviderServiceResponse
+                        {
+                            Status = HttpStatusCode.Created
+                        })
+                    .Client();                    
+            Assert.NotNull(client);
+            var r = new HttpRequestMessage(HttpMethod.Post, client.BaseAddress + "/api/test/something");
+            r.Content = new StringContent(JsonConvert.SerializeObject(new { SomeOtherProperty = "test" }), Encoding.UTF8, "application/json");
+            var response = await client.SendAsync(r);
+            Assert.Throws<ExpectationException>(() => verify());
+        }
+
+        [Fact]
         public async Task ClientRespondsSuccessToGet()
         {
             var config = new PactConfig

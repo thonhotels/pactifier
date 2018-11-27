@@ -63,11 +63,6 @@ namespace Pactifier.Core
                 .MustHaveHappenedOnceExactly();
         }
 
-        private static bool RequestsAreSame(ProviderServiceRequest expected, HttpRequestMessage actual)
-        {
-            return true;
-        }
-
         private HttpResponseMessage CreateResponseMessage()
         {
             var result = new HttpResponseMessage(Response.Status);
