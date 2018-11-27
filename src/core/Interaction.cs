@@ -17,12 +17,10 @@ namespace Pactifier.Core
         private string Description { get; set; }
         private string ProviderState { get; set; }
         private RequestComparer Comparer { get; }
-        private string BaseUrl { get; }
 
-        public Interaction(string baseUrl, RequestComparer comparer)
+        public Interaction(RequestComparer comparer)
         {
             Comparer = comparer;
-            BaseUrl = baseUrl;
         }
 
         public Interaction WillRespondWith(ProviderServiceResponse response)

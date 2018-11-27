@@ -8,12 +8,10 @@ namespace Pactifier.Core.Comparers
     public class RequestComparer
     {
         private HeaderComparer HeaderComparer { get; }
-        private string BaseUrl { get; }
 
-        public RequestComparer(string baseUrl, HeaderComparer headerComparer)
+        public RequestComparer(HeaderComparer headerComparer)
         {
             HeaderComparer = headerComparer;
-            BaseUrl = baseUrl;
         }
 
         public bool Execute(ProviderServiceRequest expected, HttpRequestMessage actual)
