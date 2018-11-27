@@ -20,6 +20,9 @@ namespace Pactifier.Core.Comparers
         {
             string RemoveLeadingQuestionMark(string q) => string.IsNullOrEmpty(q) ? q : q.Substring(1);
 
+            if (actual.Method != expected.Method)
+                return false;
+
             if ( expected
                     .Headers
                     .Keys
