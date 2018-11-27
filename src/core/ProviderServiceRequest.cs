@@ -1,14 +1,14 @@
 using System.Collections.Generic;
+using System.Net.Http;
 using Newtonsoft.Json;
 using  Newtonsoft.Json.Serialization;
 
 namespace Pactifier.Core
 {
-    public enum HttpVerb { GET, POST, PUT, DELETE }
     public class ProviderServiceRequest
     {
         [JsonProperty(PropertyName = "method", NullValueHandling = NullValueHandling.Ignore)]
-        public HttpVerb Method { get; set; }
+        public HttpMethod Method { get; set; }
         [JsonProperty(PropertyName = "path", NullValueHandling = NullValueHandling.Ignore)]
         public object Path { get; set; }
         [JsonProperty(PropertyName = "query", NullValueHandling = NullValueHandling.Ignore)]

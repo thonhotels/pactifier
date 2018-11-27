@@ -1,4 +1,7 @@
 using System;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using FakeItEasy;
 
 namespace Pactifier.Core
@@ -23,6 +26,7 @@ namespace Pactifier.Core
         public IHttpClientBase Client()
         {
             var client = A.Fake<IHttpClientBase>();
+            A.CallTo(() => client.SendAsync(A<HttpRequestMessage>._)).Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.Created)));
             return client;
         }
     }
