@@ -7,6 +7,7 @@ using FakeItEasy;
 using Pactifier.Core.Comparers;
 using Newtonsoft.Json;
 using System.Text;
+using System.Threading;
 
 namespace Pactifier.Core
 {
@@ -55,19 +56,15 @@ namespace Pactifier.Core
             Description = description;
             return this;
         }
-        public (IHttpClientBase, Action) Client()
+        public (HttpClient, Action) Client()
         {
-            var client = A.Fake<IHttpClientBase>();
+            var handler = A.Fake<FakeHttpHandler>();
+            var client = new HttpClient(handler);
             client.BaseAddress = new Uri("http://localhost");
-            A.CallTo(() => client.SendAsync(A<HttpRequestMessage>._)).Returns(Task.FromResult(CreateResponseMessage()));
-            var clientBase = new HttpClientBase(client);
-            return (clientBase, Verify(client, Request, Comparer));
-        }
-
-        private static Action Verify(IHttpClientBase client, ProviderServiceRequest r, RequestComparer comparer)
-        {
-            return () => A.CallTo(() => client.SendAsync(A<HttpRequestMessage>.That.Matches(actual => comparer.Execute(r, actual))))
-                .MustHaveHappenedOnceExactly();
+            handler.ConfigureResponse(CreateResponseMessage());
+            
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "");
+            return (client, FakeHttpHandler.Verify(handler, Request, Comparer));
         }
 
         private HttpResponseMessage CreateResponseMessage()
