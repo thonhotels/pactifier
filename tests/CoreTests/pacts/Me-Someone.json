@@ -10,9 +10,7 @@
       "description": "upon receiving stuff",
       "providerState": "something given",
       "request": {
-        "method": {
-          "method": "GET"
-        },
+        "method": "get",
         "path": "/api/test/something",
         "query": "a=b",
         "headers": {

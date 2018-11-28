@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using  Newtonsoft.Json.Serialization;
 
 namespace Pactifier.Core
@@ -13,7 +14,8 @@ namespace Pactifier.Core
         }
         
         [JsonProperty(PropertyName = "method", NullValueHandling = NullValueHandling.Ignore)]
-        public HttpMethod Method { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))] 
+        public HttpVerb Method { get; set; }
 
         [JsonProperty(PropertyName = "path", NullValueHandling = NullValueHandling.Ignore)]
         public string Path { get; set; }
@@ -24,7 +26,7 @@ namespace Pactifier.Core
         [JsonProperty(PropertyName = "headers", NullValueHandling = NullValueHandling.Ignore)]
         public IDictionary<string, string> Headers { get; set; }
         
-        [JsonProperty(PropertyName = "body")]
+        [JsonProperty(PropertyName = "body", NullValueHandling = NullValueHandling.Ignore)]
         public dynamic Body { get; set; }
     }
 }

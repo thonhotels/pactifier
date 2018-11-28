@@ -47,7 +47,7 @@ namespace CoreTests
                     .Interaction()
                     .With(new ProviderServiceRequest
                         {
-                            Method = HttpMethod.Post,
+                            Method = HttpVerb.post,
                             Path = "/api/test/something",
                             Headers = new Dictionary<string, string>
                             {
@@ -86,7 +86,7 @@ namespace CoreTests
                     .Interaction()
                     .With(new ProviderServiceRequest
                         {
-                            Method = HttpMethod.Post,
+                            Method = HttpVerb.post,
                             Path = "/api/test/something",
                             Body = new { SomeProperty = "test" }
                         })
@@ -113,7 +113,7 @@ namespace CoreTests
                     .Interaction()
                     .With(new ProviderServiceRequest
                         {
-                            Method = HttpMethod.Get,
+                            Method = HttpVerb.get,
                             Path = "/api/test/something",
                             Headers = new Dictionary<string, string>
                             {
@@ -154,7 +154,7 @@ namespace CoreTests
                     .Interaction()
                     .With(new ProviderServiceRequest
                         {
-                            Method = HttpMethod.Get,
+                            Method = HttpVerb.get,
                             Path = "/api/test/something",
                             Query = "a=b"
                         })
@@ -183,7 +183,7 @@ namespace CoreTests
                     .UponReceiving("upon receiving stuff")
                     .With(new ProviderServiceRequest
                         {
-                            Method = HttpMethod.Get,
+                            Method = HttpVerb.get,
                             Path = "/api/test/something",
                             Query = "a=b&test=quest"
                         })
@@ -212,7 +212,7 @@ namespace CoreTests
                 .UponReceiving("upon receiving stuff")
                 .With(new ProviderServiceRequest
                     {
-                        Method = HttpMethod.Get,
+                        Method = HttpVerb.get,
                         Path = "/api/test/something",
                         Query = "a=b",
                         Headers = new Dictionary<string, string>

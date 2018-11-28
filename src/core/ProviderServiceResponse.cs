@@ -15,7 +15,7 @@ namespace Pactifier.Core
         public HttpStatusCode Status { get; set; }
         [JsonProperty(PropertyName = "headers", NullValueHandling = NullValueHandling.Ignore)]
         public IDictionary<string, string> Headers { get; set; }
-        [JsonProperty(PropertyName = "body")]
+        [JsonProperty(PropertyName = "body", NullValueHandling = NullValueHandling.Ignore)]
         public dynamic Body { get; set; }
     }
 }

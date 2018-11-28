@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace Pactifier.Core.Comparers
         {
             string RemoveLeadingQuestionMark(string q) => string.IsNullOrEmpty(q) ? q : q.Substring(1);
 
-            if (actual.Method != expected.Method)
+            if (!CompareHttpVerb(expected.Method, actual.Method))
                 return false;
 
             if ( expected
@@ -41,6 +42,29 @@ namespace Pactifier.Core.Comparers
             Task.Run(async () => actualStringContent = await actualContent.ReadAsStringAsync()).Wait();
             var expectedContent = JsonConvert.SerializeObject(expected.Body);
             return (actualStringContent == expectedContent);
+        }
+
+        private bool CompareHttpVerb(HttpVerb expected, HttpMethod actual)
+        {
+            switch (expected)
+            {
+                case HttpVerb.delete:
+                    return actual == HttpMethod.Delete;
+                case HttpVerb.get:
+                    return actual == HttpMethod.Get;
+                case HttpVerb.head:
+                    return actual == HttpMethod.Head;
+                case HttpVerb.options:
+                    return actual == HttpMethod.Options;
+                case HttpVerb.post:
+                    return actual == HttpMethod.Post;
+                case HttpVerb.put:
+                    return actual == HttpMethod.Put;
+                case HttpVerb.trace:
+                    return actual == HttpMethod.Trace;
+                default:
+                    throw new NotImplementedException();
+            }
         }
     }
 }

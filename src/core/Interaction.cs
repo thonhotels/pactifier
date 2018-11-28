@@ -13,10 +13,10 @@ namespace Pactifier.Core
 {
     public class Interaction
     {
-        [JsonProperty(Order = 1)]
+        [JsonProperty(Order = 1, NullValueHandling = NullValueHandling.Ignore)]
         private string Description { get; set; }
 
-        [JsonProperty(Order = 2)]
+        [JsonProperty(Order = 2, NullValueHandling = NullValueHandling.Ignore)]
         private string ProviderState { get; set; }
         
         [JsonProperty(Order = 3)]
