@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7DCEB1AE-8430-4739-9E53-8F7E07348341}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core", "src\core\core.csproj", "{3F5FC933-1FE0-44F2-AA15-E46D1EAD9B30}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core", "src\core\pactifier.csproj", "{3F5FC933-1FE0-44F2-AA15-E46D1EAD9B30}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{60724D7B-E9F0-4220-B2CC-CEE7A188260C}"
 EndProject
