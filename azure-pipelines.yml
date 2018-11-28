@@ -4,7 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 queue:
-  name: Hosted
+  name: 'Hosted VS2017'
 
 variables:
   buildConfiguration: 'Release'
