@@ -25,3 +25,10 @@ steps:
     majorVersion: '$(Major)'
     minorVersion: '$(Minor)'
     patchVersion: '$(Patch)'
+# Push NuGet packages.
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'push'
+    nuGetFeedType: 'external'
+    packagesToPush: '$(build.artifactStagingDirectory)/*.nupkg'
+    publishFeedCredentials: 'Nuget-as-olav'
