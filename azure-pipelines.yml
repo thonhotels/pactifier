@@ -4,7 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 pool:
-  vmImage: 'Ubuntu 16.04'
+  vmImage: 'Hosted VS2017'
 
 variables:
   buildConfiguration: 'Release'
@@ -26,7 +26,7 @@ steps:
     minorVersion: '$(Minor)'
     patchVersion: '$(Patch)'
 # Push NuGet packages.
-- task: DotNetCoreCLI@2
+- task: NuGetCommand@2
   inputs:
     command: 'push'
     nuGetFeedType: 'external'
