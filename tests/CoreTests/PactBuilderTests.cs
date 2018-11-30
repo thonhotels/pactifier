@@ -233,5 +233,37 @@ namespace CoreTests
                 .Client();                    
             builder.Build();
         }
+
+        [Fact]
+        public void UseBaseUrlIfset()
+        {
+            var builder = new PactBuilder(new PactConfig("/api"));
+            
+            var (client, verify) = builder
+                .ServiceConsumer("Me")
+                .HasPactWith("Someone")
+                .Interaction()
+                .Given("something given")
+                .UponReceiving("upon receiving stuff")
+                .With(new ProviderServiceRequest
+                    {
+                        Method = HttpVerb.get,
+                        Path = "/api/test/something",
+                        Query = "a=b",
+                    })
+                .WillRespondWith(new ProviderServiceResponse
+                    {
+                        Status = HttpStatusCode.OK,
+                        Headers = new Dictionary<string, string>
+                        {
+                            { "Content-Type", "application/json; charset=utf-8" }
+                        },                           
+                        Body = new { SomeProperty = "test" }                            
+                    })
+                .Client();   
+            var request = new HttpRequestMessage(HttpMethod.Get, "test/something?a=b");
+            client.SendAsync(request);
+            verify();
+        }
     }
 }

@@ -14,6 +14,7 @@ namespace Pactifier.Core
         public string ProviderName { get; private set; }
 
         private List<Interaction> Interactions { get; }
+        private string BaseUrl { get; }
 
         public PactBuilder() : this(new PactConfig())
         {
@@ -23,6 +24,7 @@ namespace Pactifier.Core
         {
             Config = config;
             Interactions = new List<Interaction>();
+            BaseUrl = config.BaseUrl;
         }
 
         public PactBuilder HasPactWith(string providerName)
@@ -37,9 +39,9 @@ namespace Pactifier.Core
             return this;
         }
 
-        public Interaction Interaction()
+        public Interaction Interaction(string baseUrl = null)
         {
-            var i = new Interaction(new RequestComparer(new HeaderComparer()));
+            var i = new Interaction(baseUrl ?? BaseUrl, new RequestComparer(new HeaderComparer()));
             Interactions.Add(i);
             return i;
         }
