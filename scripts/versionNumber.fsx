@@ -3,7 +3,7 @@ module VersionNumber
 open System.Text.RegularExpressions
 
 #if !FAKE
-  #load ".fake/deploy.fsx/intellisense.fsx"
+  #load ".fake/build.fsx/intellisense.fsx"
 #endif    
 
 let getFromGit () : string option = 

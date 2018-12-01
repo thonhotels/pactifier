@@ -5,7 +5,7 @@
     nuget Fake.DotNet.Cli
     nuget Fake.Tools.Git //"
 
-#load "deploy/versionNumber.fsx"
+#load "versionNumber.fsx"
 #load ".fake/build.fsx/intellisense.fsx"
 
 open Fake.Core
