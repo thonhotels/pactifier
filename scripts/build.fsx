@@ -2,7 +2,8 @@
     nuget Fake.Core.Target
     nuget Fake.Core.Globbing
     nuget Fake.Core.Trace
-    nuget Fake.DotNet.Cli //"
+    nuget Fake.DotNet.Cli
+    nuget Fake.Tools.Git //"
 
 #load "deploy/versionNumber.fsx"
 #load ".fake/build.fsx/intellisense.fsx"
@@ -52,7 +53,7 @@ Target.create "Pack" (fun _ ->
     | Some x -> 
         Trace.log ("version number was something, doing pack")
         Shell.replaceInFiles 
-                [("$(BUILD_BUILDNUMBER)", x)]  
+                [("$(BUILDNUMBER)", x)]  
                 [sprintf "../Directory.Build.props" ]
         DotNet.pack 
             (fun o -> 
