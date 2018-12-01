@@ -4,7 +4,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <!-- edit this value to change the current major.minor version -->
-    <VersionPrefix>0.1</VersionPrefix>
+    <VersionPrefix>0.2</VersionPrefix>
    </PropertyGroup>
 
   <Choose>
@@ -17,7 +17,7 @@
     <Otherwise>
       <PropertyGroup>
         <!-- Release version numbers are MAJOR.MINOR.# -->
-        <VersionPrefix>$(VersionPrefix).$(BUILD_BUILDID.PadLeft(1, '0'))</VersionPrefix>
+        <VersionPrefix>$(VersionPrefix).$(BUILD_BUILDNUMBER)</VersionPrefix>
       </PropertyGroup>
     </Otherwise>
   </Choose>
