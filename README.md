@@ -166,7 +166,7 @@ public class SomethingApiConsumerTests
                         LastName = "Awesome"
                     }
                 }) //NOTE: WillRespondWith call must come last as it will register the interaction
-                .Client();
+                .Client();  // Client returns a tuple, containing a HttpClient and a verify function
         var consumer = new SomethingApiClient(client);
 
         //Act
