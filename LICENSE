@@ -1,6 +1,11 @@
 MIT License
 
-Copyright (c) 2018 thonhotels
+Copyright (c) 2018 Thon Hotels
+
+The README.md file is in part copy of https://github.com/pact-foundation/pact-net/blob/master/README.md 
+and thus the Copyright for that file is:
+    Copyright (c) 2014 seek.com.au
+    Copyright (c) 2018 Thon Hotels
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
