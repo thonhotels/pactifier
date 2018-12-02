@@ -21,7 +21,12 @@ Read more about Pact and the problems it solves at https://docs.pact.io/
 
 Please feel free to contribute, we do accept pull requests. This solution has been built using Visual Studio Code, but Visual Studio 2017 should work fine too.
 
+## Install
+dotnet add package pactifier
+
 ## Usage
+
+
 In the following examples we will be using xUnit, but NUnit could be used as well.
 
 ### Service Consumer
