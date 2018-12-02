@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Pactifier.Core.Comparers;
 using Pactifier.Core.Serialization;
@@ -15,6 +16,7 @@ namespace Pactifier.Core
 
         private List<Interaction> Interactions { get; }
         private string BaseUrl { get; }
+        public Interaction InteractionUnderConstruction { get; private set; }
 
         public PactBuilder() : this(new PactConfig())
         {
@@ -25,6 +27,9 @@ namespace Pactifier.Core
             Config = config;
             Interactions = new List<Interaction>();
             BaseUrl = config.BaseUrl;
+
+            InteractionUnderConstruction =
+                new Interaction(BaseUrl, new RequestComparer(new HeaderComparer()));
         }
 
         public PactBuilder HasPactWith(string providerName)
@@ -39,11 +44,42 @@ namespace Pactifier.Core
             return this;
         }
 
-        public Interaction Interaction(string baseUrl = null)
+        [Obsolete("No need to call this anymore")]
+        public PactBuilder Interaction(string baseUrl = null)
         {
-            var i = new Interaction(baseUrl ?? BaseUrl, new RequestComparer(new HeaderComparer()));
-            Interactions.Add(i);
-            return i;
+            InteractionUnderConstruction = 
+                 new Interaction(baseUrl ?? BaseUrl, new RequestComparer(new HeaderComparer()));
+            return this;
+        }
+
+        public PactBuilder Given(string providerState)
+        {
+            InteractionUnderConstruction =
+                InteractionUnderConstruction.Given(providerState);
+            return this;
+        }
+
+        public PactBuilder UponReceiving(string description)
+        {
+            InteractionUnderConstruction =
+                InteractionUnderConstruction.UponReceiving(description);
+            return this;
+        }
+
+        public PactBuilder With(ProviderServiceRequest request)
+        {
+            InteractionUnderConstruction =
+                InteractionUnderConstruction.With(request);
+            return this;
+        }
+
+        public Interaction WillRespondWith(ProviderServiceResponse response)
+        {
+            var result =
+                InteractionUnderConstruction.WillRespondWith(response);
+            Interactions.Add(InteractionUnderConstruction);
+            InteractionUnderConstruction = new Interaction(BaseUrl, new RequestComparer(new HeaderComparer())); 
+            return result;
         }
 
         public void Build()

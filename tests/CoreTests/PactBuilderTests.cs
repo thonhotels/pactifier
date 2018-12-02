@@ -23,7 +23,6 @@ namespace CoreTests
                 builder
                     .ServiceConsumer("Me")
                     .HasPactWith("Someone")
-                    .Interaction()
                     .With(new ProviderServiceRequest
                         {
 
@@ -44,7 +43,6 @@ namespace CoreTests
                 builder
                     .ServiceConsumer("Me")
                     .HasPactWith("Someone")
-                    .Interaction()
                     .With(new ProviderServiceRequest
                         {
                             Method = HttpVerb.post,
@@ -83,7 +81,6 @@ namespace CoreTests
                 builder
                     .ServiceConsumer("Me")
                     .HasPactWith("Someone")
-                    .Interaction()
                     .With(new ProviderServiceRequest
                         {
                             Method = HttpVerb.post,
@@ -110,7 +107,6 @@ namespace CoreTests
                 builder
                     .ServiceConsumer("Me")
                     .HasPactWith("Someone")
-                    .Interaction()
                     .With(new ProviderServiceRequest
                         {
                             Method = HttpVerb.get,
@@ -151,7 +147,6 @@ namespace CoreTests
                 builder
                     .ServiceConsumer("Me")
                     .HasPactWith("Someone")
-                    .Interaction()
                     .With(new ProviderServiceRequest
                         {
                             Method = HttpVerb.get,
@@ -178,7 +173,6 @@ namespace CoreTests
                 builder
                     .ServiceConsumer("Me")
                     .HasPactWith("Someone")
-                    .Interaction()
                     .Given("something given")
                     .UponReceiving("upon receiving stuff")
                     .With(new ProviderServiceRequest
@@ -207,7 +201,6 @@ namespace CoreTests
             builder
                 .ServiceConsumer("Me")
                 .HasPactWith("Someone")
-                .Interaction()
                 .Given("something given")
                 .UponReceiving("upon receiving stuff")
                 .With(new ProviderServiceRequest
@@ -242,7 +235,6 @@ namespace CoreTests
             var (client, verify) = builder
                 .ServiceConsumer("Me")
                 .HasPactWith("Someone")
-                .Interaction()
                 .Given("something given")
                 .UponReceiving("upon receiving stuff")
                 .With(new ProviderServiceRequest
