@@ -9,11 +9,19 @@ using FakeItEasy;
 using Newtonsoft.Json;
 using Pactifier.Core;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace CoreTests
 {
     public class PactBuilderTests
     {
+        private readonly ITestOutputHelper output;
+
+        public PactBuilderTests(ITestOutputHelper output)
+        {
+            this.output = output;
+        }
+
         [Fact]
         public void PactBuilderCreatesHttpClient()
         {
@@ -168,7 +176,7 @@ namespace CoreTests
         [Fact]
         public async Task QueryCanContainMultipleSegments()
         {
-            var builder = new PactBuilder();
+            var builder = new PactBuilder(s => output.WriteLine(s));
             var (client, verify) =
                 builder
                     .ServiceConsumer("Me")
@@ -230,7 +238,7 @@ namespace CoreTests
         [Fact]
         public void UseBaseUrlIfset()
         {
-            var builder = new PactBuilder(new PactConfig("/api"));
+            var builder = new PactBuilder(new PactConfig( "/api"), s => output.WriteLine(s));
             
             var (client, verify) = builder
                 .ServiceConsumer("Me")
@@ -254,6 +262,44 @@ namespace CoreTests
                     })
                 .Client();   
             var request = new HttpRequestMessage(HttpMethod.Get, "test/something?a=b");
+            client.SendAsync(request);
+            verify();
+        }
+
+        [Fact]
+        public void MultipleRequestHeadersWorks()
+        {
+            var builder = new PactBuilder(new PactConfig( "/api"), s => output.WriteLine(s));
+            
+            var (client, verify) = builder
+                .ServiceConsumer("Me")
+                .HasPactWith("Someone")
+                .Given("something given")
+                .UponReceiving("upon receiving stuff")
+                .With(new ProviderServiceRequest
+                    {
+                        Method = HttpVerb.get,
+                        Path = "/api/test/something",
+                        Query = "a=b",
+                        Headers = new Dictionary<string, string>
+                        {
+                            { "Accept", "application/json" } ,
+                            { "Authorization", "Bearer accesstoken" } ,
+                        }
+                    })
+                .WillRespondWith(new ProviderServiceResponse
+                    {
+                        Status = HttpStatusCode.OK,
+                        Headers = new Dictionary<string, string>
+                        {
+                            { "Content-Type", "application/json; charset=utf-8" }
+                        },                           
+                        Body = new { SomeProperty = "test" }                            
+                    })
+                .Client();   
+            var request = new HttpRequestMessage(HttpMethod.Get, "test/something?a=b");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", "accesstoken");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             client.SendAsync(request);
             verify();
         }

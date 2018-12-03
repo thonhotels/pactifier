@@ -182,3 +182,29 @@ public class SomethingApiConsumerTests
 
 #### 4. Run the test
 Everything should be green and the pact file is generated in the folder you specified in PactConfig.PactDir
+
+#### 5. My test fails! 😱🤬
+The current implementation is based on verifying the calls using FakeItEasy and the implementation needs a little help to output what the expected request was.
+If you provide pactifier with a text output function it will display the contents of the expected request for easier comparison with the actual request.
+Using xUnit this can be done like this:
+```c#
+public class MyTests
+{
+    private readonly ITestOutputHelper output;
+
+    public MyTests(ITestOutputHelper output)
+    {
+        this.output = output;
+    }
+
+    [Fact]
+    public void TestThatSomethingWorks()
+    {
+        var builder = new PactBuilder(new PactConfig( "/api"), s => output.WriteLine(s)); // we pass in the ITestOutputHelper.WriteLine as a string delegate (Action<string>)
+        ..
+        ..
+        ..
+    }
+            
+
+```

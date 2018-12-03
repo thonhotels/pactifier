@@ -27,13 +27,15 @@ namespace Pactifier.Core
         private string BaseUrl { get; }
 
         private RequestComparer Comparer { get; }
+        private Action<string> Output { get; }
 
-        public Interaction(string baseUrl, RequestComparer comparer)
+        public Interaction(string baseUrl, RequestComparer comparer, Action<string> output)
         {
             string EnsureEndsWithSlash(string path) => string.IsNullOrEmpty(path) || path.EndsWith("/") ? path : path + "/";
 
             BaseUrl = EnsureEndsWithSlash(baseUrl);
             Comparer = comparer;
+            Output = output;
         }
 
         public Interaction WillRespondWith(ProviderServiceResponse response)
@@ -66,8 +68,8 @@ namespace Pactifier.Core
             client.BaseAddress = new Uri("http://localhost" + BaseUrl);
             handler.ConfigureResponse(CreateResponseMessage());
             
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "");
-            return (client, FakeHttpHandler.Verify(handler, Request, Comparer));
+            // client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "");
+            return (client, handler.Verify(handler, Request, Comparer, Output));
         }
 
         private HttpResponseMessage CreateResponseMessage()

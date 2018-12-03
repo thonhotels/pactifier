@@ -7,6 +7,7 @@ namespace Pactifier.Core
 {
     public class PactBuilder 
     {
+        private Action<string> Output { get; }
         private PactConfig Config { get; }
 
 
@@ -18,18 +19,19 @@ namespace Pactifier.Core
         private string BaseUrl { get; }
         public Interaction InteractionUnderConstruction { get; private set; }
 
-        public PactBuilder() : this(new PactConfig())
+        public PactBuilder(Action<string> output = null) : this(new PactConfig(), output)
         {
         }
 
-        public PactBuilder(PactConfig config)
+        public PactBuilder(PactConfig config, Action<string> output = null)
         {
+            Output = output;
             Config = config;
             Interactions = new List<Interaction>();
             BaseUrl = config.BaseUrl;
 
             InteractionUnderConstruction =
-                new Interaction(BaseUrl, new RequestComparer(new HeaderComparer()));
+                new Interaction(BaseUrl, new RequestComparer(new HeaderComparer()), Output);
         }
 
         public PactBuilder HasPactWith(string providerName)
@@ -48,7 +50,7 @@ namespace Pactifier.Core
         public PactBuilder Interaction(string baseUrl = null)
         {
             InteractionUnderConstruction = 
-                 new Interaction(baseUrl ?? BaseUrl, new RequestComparer(new HeaderComparer()));
+                 new Interaction(baseUrl ?? BaseUrl, new RequestComparer(new HeaderComparer()), Output);
             return this;
         }
 
@@ -78,7 +80,7 @@ namespace Pactifier.Core
             var result =
                 InteractionUnderConstruction.WillRespondWith(response);
             Interactions.Add(InteractionUnderConstruction);
-            InteractionUnderConstruction = new Interaction(BaseUrl, new RequestComparer(new HeaderComparer())); 
+            InteractionUnderConstruction = new Interaction(BaseUrl, new RequestComparer(new HeaderComparer()), Output); 
             return result;
         }
 
