@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
 namespace Pactifier.Core.Serialization
@@ -21,6 +22,7 @@ namespace Pactifier.Core.Serialization
         public Metadata Metadata { get; set; }
 
         private string PactDir { get; }
+        private JsonConverter[] JsonConverters { get; }
 
         public PactSerializer(string consumerName, string providerName, IEnumerable<Interaction> interactions, PactConfig config)
         {
@@ -29,6 +31,7 @@ namespace Pactifier.Core.Serialization
             Interactions = interactions;
             Metadata = new Metadata(config.SpecificationVersion);
             PactDir = config.PactDir;
+            JsonConverters = config.JsonConverters;
         }
 
         public void Execute()
@@ -39,7 +42,8 @@ namespace Pactifier.Core.Serialization
                                                             {
                                                                 NamingStrategy = new CamelCaseNamingStrategy()
                                                             },
-                                    Formatting = Formatting.Indented
+                                    Formatting = Formatting.Indented,
+                                    Converters = JsonConverters
                                 });
             
             File.WriteAllText(GetFileName(), json);
