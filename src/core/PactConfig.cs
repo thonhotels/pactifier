@@ -11,14 +11,13 @@ namespace Pactifier.Core
             SpecificationVersion = "2.0.0";
             LogDir = "./logs";
             BaseUrl = baseUrl;
-            JsonConverters = new JsonConverter[0];
+            JsonConverters = new [] { new Newtonsoft.Json.Converters.StringEnumConverter() } ;
         }
 
         public string PactDir { get; set; }
         public string LogDir { get; set; }
         public string BaseUrl { get; }
         public string SpecificationVersion { get; set; }
-
-        public JsonConverter[] JsonConverters { get; internal set; }
+        public JsonConverter[] JsonConverters { get; set; }
     }
 }
